@@ -12,7 +12,7 @@ class ProductsScreen extends RearchConsumer {
 
   @override
   Widget build(BuildContext context, WidgetHandle use) {
-    final products = use(productsCapsule);
+    final (products, refreshProducts) = use(productsCapsule);
 
     return Scaffold(
       appBar: AppBar(
@@ -20,7 +20,7 @@ class ProductsScreen extends RearchConsumer {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          // TODO: Implement pull-to-refresh.
+          refreshProducts();
         },
         child: switch (products) {
           AsyncLoading() => const Center(child: CircularProgressIndicator()),

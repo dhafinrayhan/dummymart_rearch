@@ -10,10 +10,11 @@ part 'products.g.dart';
 Future<List<Product>> products(ProductsRef ref) =>
     ref.watch(apiServiceProvider).fetchProducts();
 
-Future<List<Product>> _asyncProductsCapsule(CapsuleHandle use) =>
-    use(apiServiceCapsule).fetchProducts();
-
-AsyncValue<List<Product>> productsCapsule(CapsuleHandle use) {
-  final delayed = use(_asyncProductsCapsule);
-  return use.future(delayed);
+(AsyncValue<List<Product>>, void Function()) productsCapsule(
+  CapsuleHandle use,
+) {
+  // TODO: Refresh function must return a future.
+  // TODO: Implement auto dispose.
+  final apiService = use(apiServiceCapsule);
+  return use.refreshableFuture(() => apiService.fetchProducts());
 }
