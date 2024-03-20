@@ -1,32 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rearch/flutter_rearch.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:rearch/rearch.dart';
 
 import '../models/product.dart';
 import '../providers/products.dart';
 
 /// A screen showing all products in a list view.
-class ProductsScreen extends ConsumerWidget {
+class ProductsScreen extends RearchConsumer {
   const ProductsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final products = ref.watch(productsProvider);
+  Widget build(BuildContext context, WidgetHandle use) {
+    final products = use(productsCapsule);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Products'),
       ),
       body: RefreshIndicator(
-        onRefresh: () => ref.refresh(productsProvider.future),
-        child: products.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (_, __) => const Center(child: Text('An error occured')),
-          data: (products) => ListView.builder(
-            itemCount: products.length,
-            itemBuilder: (_, index) => _ProductListTile(products[index]),
-          ),
-        ),
+        onRefresh: () async {
+          // TODO: Implement pull-to-refresh.
+        },
+        child: switch (products) {
+          AsyncLoading() => const Center(child: CircularProgressIndicator()),
+          AsyncError() => const Center(child: Text('An error occured')),
+          AsyncData(:final data) => ListView.builder(
+              itemCount: data.length,
+              itemBuilder: (_, index) => _ProductListTile(data[index]),
+            ),
+        },
       ),
     );
   }

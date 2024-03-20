@@ -1,4 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:rearch/rearch.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'api_client.dart';
@@ -18,6 +19,15 @@ part 'api_service.g.dart';
 /// without keepAlive set to true.
 @Riverpod(keepAlive: true)
 ApiClient apiService(ApiServiceRef ref) {
+  final token = Hive.box<String>('token').get('current');
+
+  const mock = bool.fromEnvironment('MOCK_API', defaultValue: false);
+  if (mock) return MockedApiClient();
+
+  return token != null ? ApiClient.withToken(token) : ApiClient();
+}
+
+ApiClient apiServiceCapsule(CapsuleHandle use) {
   final token = Hive.box<String>('token').get('current');
 
   const mock = bool.fromEnvironment('MOCK_API', defaultValue: false);
