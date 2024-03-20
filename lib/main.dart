@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_rearch/flutter_rearch.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -29,7 +30,7 @@ Future<void> main() async {
 
   runApp(ProviderScope(
     observers: [_ProviderObserver()],
-    child: const DummyMartApp(),
+    child: const RearchBootstrapper(child: DummyMartApp()),
   ));
 }
 
